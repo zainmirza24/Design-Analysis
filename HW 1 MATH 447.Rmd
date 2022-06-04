@@ -1,0 +1,99 @@
+---
+title: "HW 1 447 Mirza, Zain"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+##Exercise 1
+```{r}
+MM.data= c(16.85, 16.40, 17.21, 16.35, 16.52, 17.04, 16.96, 17.15, 16.59, 16.57)
+
+UM.data= c(16.66, 16.75, 17.37, 17.12, 16.98, 16.87, 17.34, 17.02, 17.08, 17.27)
+
+mean(MM.data)
+mean(UM.data)
+
+median(MM.data)
+median(UM.data)
+
+sd(MM.data)
+sd(UM.data)
+
+var(MM.data)
+var(UM.data)
+
+IQR(MM.data)
+IQR(UM.data)
+
+hist(MM.data)
+hist(UM.data)
+
+#The histogram in the Modified Mortar data set is more normally distributed than the unmodified data set. The histogram in the unmodified mortar data set indicates a slightly more left-skewed distribution. 
+
+```
+
+
+##Exercise 2 
+```{r}
+z=seq(2,65,by=3) ;z
+
+r=log(z);r
+
+length(z)
+
+sum(r<3)
+
+##Find Z Critical values
+
+qnorm(p=.025, lower.tail=TRUE)
+qnorm(p=.01, lower.tail=TRUE)
+```
+
+##Exercise 3
+
+1.2
+  Suppose that you want to investigate the factors that potentially affect cooking rice.
+(a) What would you use as a response variable in this experiment? How would you measure the response?
+  
+  The texture of the rice once it is cooked is our response variable for this experiment. We can measure our response by thuroughly noting the amount of both water and rice we put into our pan. 
+(b) List all of the potential sources of variability that could impact the response.
+  Potential factors include using too much water, not enough water, the brand of rice in which we use, the time in which we place the rice into the water, our cooking time, our temperature of the pan, and many others. 
+(c) Complete the first three steps of the guidelines for designing experiments in Section 1.4.
+  1) Objective: 
+      We want to analyze the various factors which can potentially affect the cooking of the rice. 
+  2) Response Variable: 
+      The texture of the rice and how we want it to to come out. 
+  3) Factors: 
+      Too much water, temperature of pan, temperature of water, brand of rice. (See part B for more).
+      Levels: (A or B), Low - Medium - High, time (in min/seconds/etc.)
+      Range: categorical, degrees Farenheit, time frames (i.e 2-6 min/6-10 min).
+      Ranges: 
+
+##Exercise 4
+
+1.4
+
+Select an experiment of interest to you. Complete steps 1–3 of the guidelines for designing experiments in Section 1.4.
+
+  1) Objective: Finding the best conditions to grow garden flowers. We want to study how the growth of garden flowers is impacted by various factors. 
+  2) Response Variable: The Growth of the garden flower(s) (IN height/# of flowers blossomed).
+  3) Factors: Sunlight, Water, Fertilizer, Soil.
+     Levels: Time, amount per day/per 2-days, Fertilizer and soil A vs. Fertilizer and soil B.
+     Range: 0-12 hours, categorical. 
+  
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
