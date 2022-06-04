@@ -1,0 +1,109 @@
+---
+title: "HW 8 447"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#8.1
+```{r}
+chemical = read.table("8.1 447.txt", header = T)
+chemical
+fraction = with(chemical, chemical[A * B * C * D ==1,]) #2^(4-1) with I=ABCD (Resolution IV)
+summary(lm(Yield ~ A * B * C * D, fraction)) #ANOVA
+alias(lm(Yield ~ A * B * C * D, fraction)) #Alias structure
+library(gplots) #Half-normal plot
+qqnorm(aov(Yield ~ A * B * C * D, fraction), label = TRUE)
+summary(lm(Yield ~ A * (B+D), fraction)) #Refined; main factor A and interaction A:B + A:D are the most significant 
+summary(aov(Yield ~ A, fraction)) #closest p-value in refined model; A is significant 
+
+```
+
+#8.10
+```{r}
+#a.
+leaf = read.table("8.10 447.txt", header = T)
+leaf
+###Resolution IV design
+summary(lm(FH ~ A * B * C * D * E, leaf))
+lm = summary(lm(FH ~ A + B*E, leaf)) #refined model
+alias(lm(FH ~ A * B * C * D * E, leaf)) #alias structure
+
+#b.
+leaf.aov = summary(aov(FH ~ A * B * C * D * E, leaf)) #ANOVA
+#main effects: A, B, D, and E are shown to be significant 
+#interaction effect B:E are also significant in this data set
+
+#c. 
+leaf2 = read.table("8.10c.txt", header = T)
+leaf2
+range.aov = summary(aov(Range ~ A * B * C * D * E, leaf2))
+range.lm = summary(lm(Range ~ A * B * C * D * E, leaf2))
+SD.lm = summary(lm(StDev ~ A * B * C * D * E, leaf2))
+SD.aov = summary(aov(StDev ~ A* B * C * D * E, leaf2))
+qqnorm(aov(Range ~ A * B * C * D * E, leaf2), label = TRUE)
+qqnorm(aov(StDev ~ A * B * C * D * E, leaf2), label = T)
+#Identify outliers effects 
+RR.lm = summary(lm(Range ~ A + B * C * E, leaf2))
+summary(aov(Range ~ A + B*C*E, leaf2))
+RSD.lm = summary(lm(StDev ~ A + B*C*E, leaf2))
+summary(aov(StDev ~ A + B*C*E, leaf2))
+#main effects A and B as well as interaction effects C:E and B:C:E have significant effect on the variability in free height.
+
+
+
+#d. 
+library(gplots)
+##res = leaf$FH- fitted(RR.lm)
+##res2 = leaf$FH-fitted(RSD.lm)
+library(car)
+##qqPlot(res)  
+##qqPlot(res2) 
+##not knitting will ask in Office Hours ---> error: numeric(0) 
+##Based on assumption residual plots show a normal dist. 
+
+#e. 
+###no this is not the best, The best with 5 factors (i.e. 2^{5} factorial) has the greatest resolution of V, this is done by setting the generator to I = ABCDE. 
+```
+
+#8.12
+```{r}
+##qqPlot(leaf.aov) --> not knitting because of previous code
+##A at low level 
+##B at high level
+##C at low level
+##D at either though low is preferred
+
+
+
+
+
+
+
+
+
+```
+
+#8.14
+```{r}
+mike = read.table("8.14.txt", header = T)
+mike
+##fraction1 = with(mike, mike[A * B * C * D * E ==1,])
+##summary(lm(Yield ~ A * B * C * D, fraction1)) #ANOVA
+##alias(lm(Yield ~ A * B * C * D, fraction1)) #Alias structure
+##Stuck on how to incorp. 2 blocks into a one half fraction run. 
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
