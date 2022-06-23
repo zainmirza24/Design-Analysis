@@ -1,5 +1,5 @@
 # Design/Analysis
-HW code from Design and Analysis of Experiments 8th Edition textbook 
+HW/Exam code from Design and Analysis of Experiments 8th Edition textbook 
 <p align="left">
 
 <!-- For more icons please follow  https://github.com/MikeCodesDotNET/ColoredBadges -->
