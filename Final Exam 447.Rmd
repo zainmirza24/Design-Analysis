@@ -1,0 +1,343 @@
+---
+title: "Final Exam MATH 447"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#1
+```{r}
+data1 = read.table("Final1.txt", header = T)
+data1
+library(car)
+
+############################################################1)
+#H0: coating type does not affect the tube conductivity
+#Ha: coating type does affect the tube conductivity.
+
+alpha=0.05
+
+conductivity.aov=aov(Conductivity~factor(CoatingType), data1) #ANOVA
+summary(conductivity.aov)
+#P-value=3.11e-06.
+##p-value is far much less than our alpha, thus we reject the null hypothesis & 
+##confirm that coating type does affect the tube conductivity.
+
+############################################################2)
+overall.mean=mean(data1$Conductivity)
+overall.mean
+#overall mean is equal to 135.52
+
+model.tables(conductivity.aov) #treatment effects for coating type 
+#Type 1 = -5.92, Type 2 = -3.72, Type 3 = -3.32, Type 4 = 6.08, Type 5 = 6.88
+
+##############################################################3)
+#Fisher LSD
+b = 5
+a = 5
+N = b*a
+alpha = .05
+ybar.trt = as.vector(with(data1, tapply(Conductivity, CoatingType, function(x) 
+  mean(x))))
+summary(ybar.trt)
+MSE = summary(conductivity.aov)[[1]][2,3]
+MSE
+##LSD is less conservative, but more powerful. LSD test compares one pairwise 
+##mean whereas Tukey's method compares all pairwise means. 
+
+###H0: mu1 = mu2 
+###Ha: mu1 != mu2
+t0 = (ybar.trt[1] - ybar.trt[2])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is less than pval, we will fail to reject the null hypothesis. 
+##Thus we conclude there is strong evidence the means are equal for 1 and 2
+
+###H0: mu1 = mu3
+###Ha: mu1 != mu3
+t0 = (ybar.trt[1] - ybar.trt[3])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is less than pval, we fail to reject H0, concluding that means 
+##are equal for type 1 and 3. 
+
+###H0: mu1 = mu4
+###Ha: mu1 != mu4
+t0 = (ybar.trt[1] - ybar.trt[4])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 1 and 4. 
+
+###H0: mu1 = mu5
+###Ha: mu1 != mu5
+t0 = (ybar.trt[1] - ybar.trt[5])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 1 and 5. 
+
+###H0: mu2 = mu3
+###Ha: mu2 != mu3
+t0 = (ybar.trt[2] - ybar.trt[3])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is less than pval, we fail to reject H0, concluding that means are 
+##equal for type 2 and 3. 
+
+###H0: mu2 = mu4
+###Ha: mu2 != mu4
+t0 = (ybar.trt[2] - ybar.trt[4])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 2 and 4. 
+
+###H0: mu2 = mu5
+###Ha: mu2 != mu5
+t0 = (ybar.trt[2] - ybar.trt[5])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 2 and 5. 
+
+###H0: mu3 = mu4
+###Ha: mu3 != mu4
+t0 = (ybar.trt[3] - ybar.trt[4])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 3 and 4. 
+
+###H0: mu3 = mu5
+###Ha: mu3 != mu5
+t0 = (ybar.trt[3] - ybar.trt[5])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is greater than pval, we reject H0, concluding that means are not 
+##equal for type 3 and 5. 
+
+###H0: mu4 = mu5 
+###Ha: mu4 != mu5
+t0 = (ybar.trt[4] - ybar.trt[5])/sqrt(2*MSE/b)
+t0
+pval = 2*pt(abs(t0), (a-1)*(b-1), lower.tail = F)
+pval
+
+##Since alpha is less than pval, we fail to reject H0, concluding that means are 
+##equal for type 4 and 5. 
+
+################################################4)
+alpha = .05
+##Tukey's Method
+TukeyHSD(aov(Conductivity ~ factor(CoatingType), data1))
+##Same Conclusions as LSD method
+
+
+##Differences in mean levels of factor: Coating Type
+plot(TukeyHSD(aov(Conductivity~factor(CoatingType), data1)))
+
+#################################################5)
+conductivity.lm = lm(Conductivity ~ factor(CoatingType), data1)
+library(car)
+##QQplot 
+qqPlot(residuals(conductivity.lm))
+##Conclusion is that the data is not normally distributed. Based on this plot 
+##the residual points are not close to the blue line. 
+
+##################################################6)
+boxplot(Conductivity~CoatingType, data1)
+##From this boxplot we can see it is clear that we want Coating Type 1 in order 
+##to minimize conductivity. 
+
+```
+
+
+
+
+#2
+```{r}
+###################################################1)
+#The 3 factors in this experiment are Soil type, Water Frequency Scheme, and 
+#Peanut Type (A - D). Our nuisance factors for this experiment are going to be 
+#the Water Frequency scheme and the Soil Type. This is because we want our 
+#primary focus to be on the 4 varieties of peanuts, otherwise known as our 
+#treatment effect. The soil type and wter frequency are nuisance factors 
+#because they are sources of variation that are not of our main interest for the 
+#experiment.
+
+#################################################2)
+##Latin - Square
+library(readxl)
+data2 = read_xlsx("Final2.xlsx")
+data2
+
+##H0: mu1 = mu2 = mu3 = mu4 
+##Ha: @ least one is different from rest 
+alpha = .05 
+
+##treatment  = Peanut Type
+yield.aov = aov(Yield~factor(WFS) + factor(ST) + factor(PT), data2)
+summary(yield.aov)
+###P-val is less than alpha for all 3 factors, nusiance and treatment. Because 
+#of this, we can reject the null hypothesis, and can confirm that all 3 factors 
+#do affect the yield of the peanut. 
+
+###############################################3)
+yield.lm = lm(Yield ~ factor(WFS) + factor(ST) + factor(PT), data2)
+library(car)
+##QQPlot
+qqPlot(residuals(yield.lm))
+##The data looks acceptable to be normally distributed. Looking at this qqPlot,
+#we can see the residual points are either on or very close to the blue shaded 
+#line.
+
+##################################################4)
+plot(Yield ~ factor(WFS) + factor(ST) + factor(PT), data2)
+##From these boxplots we can visualize that it is clear my recommendations to 
+#achieve the highest resulting yields come from a Water Frequency Type 4, 
+#a Soil Type 1, and Peanut Type A. 
+
+```
+
+
+#3
+```{r}
+life = c(30.82,26.79,23.98,30.92,28.89,28.71,27.77,33.91,8.22,39.58,16.96,33.09,
+         38.08,38.21,23.92,31.13,23.95,31.06,27.83,33.20,29.06,24.23,30.38,
+         30.36,17.12,23.74,30.70,14.20,34.29,35.88,39.65,34.21)
+A = rep(c("-","-","-","-","+","+","+","+" ), 4)
+B = rep(c("-","+","-","+"), each=8)
+C = rep(c("-","+"), each=16)
+data3 = data.frame(life, A, B, C)
+#recode the data: x=1 at level +; X=-1 at level -
+coded=function(x) #a function to code variable x
+{
+  ifelse(x=="+", 1, -1)
+}
+
+###############################################1)
+data3.1 = within(data3, {cA=coded(A); cB=coded(B); cC=coded(C)}) #adding three
+#columns
+life.lm = lm(life~cA*cB*cC, data3.1)
+summary(life.lm)
+2*coef(life.lm)[-1] #main effect
+##Looking at this, its clear that our main effect A is large, as well as our 
+##interaction effect between A:B. A:B:C is also somewhat larger in comparison to 
+##the smaller effects illustrated here. 
+
+################################################2)
+life.aov = aov(life ~ A*B*C, data3)
+summary(life.aov) #ANOVA test; P-val's for main effect A and interaction effect 
+#A:B are both less than alpha, confirming our previously made conclusions.
+
+##############################################3)
+life.lm1 = lm(life ~ cA*cB, data3.1)
+summary(life.lm1) #regression line prediction
+#formula is as follows: life = 28.776 + 3.016A + -0.090B + 2.719AB
+#higher coefficient equals longer life, thus I would recommend factors A and AB. 
+
+#########################################4)
+with(data3, interaction.plot(A, B, life))
+##We want the highest response(life), therefore A+:B+ are what I would recommend 
+##for a longer life. 
+
+##########################################5)
+res = data3$life-fitted(life.lm1)
+res
+library(car)
+qqPlot(res)#normal distribution; residual points are on or very close to blue 
+#shaded line. 
+plot(fitted(life.lm1), res)#random distribution, no curvature(bell shape, etc.) 
+##No obvious/clear issues based on the residual distribution and plot. 
+
+```
+
+
+#4
+```{r}
+##############################################1)
+#This is indeed a fractional factorial design. The fraction is 7 in this 
+#experiment and the resolution is 3. 
+#(See table 8.14 in the textbook to get a better idea)
+#This is what I used to determine the information expressed in this question. 
+
+###############################################2)
+##The design generator for this experiment is D = +/-AB, E = +/-AC, F = +/-BC, 
+##G = +/-ABC
+
+##alias structure 
+Response = c(85.6,75.0,93.3,145.5,83.6,77.5,95.1,141.9)
+A=rep(c(-1,1),4)
+B=rep(c(-1,-1,1,1),2)
+C=c(rep(-1,4),rep(1,4))
+LJ = data.frame(A=A, B=B, C=C, Response = Response)
+LJ = within(LJ, {D = A*B;E=A*C; F=B*C; G=A*B*C}) 
+summary(lm(Response ~ A * B * C * D * E * F * G, LJ))
+alias(lm(Response ~ A * B * C * D * E * F * G, LJ )) #alias structure 
+
+###############################################3)
+#H0: mu1 = mu2 = mu3 = mu4 = mu5 = mu6 = mu7
+#Ha: @ least one mu is different
+library(gplots)
+qqnorm(aov(Response ~  A * B * C * D * E * F * G, LJ), label = TRUE)
+###Outliers include factors A, B, and D. 
+summary(aov(Response ~ A * B * D, LJ))
+###Outliers deemed as significant.  
+##Alpha is greater than all p-val's thus we reject H0, accepting the alternative 
+##hypothesis(Ha). 
+
+#############################################4)
+#H0: mu1 = mu2 = mu3 = mu4 = mu5 = mu6 = mu7
+#Ha: @ least one is different 
+LJ.FO=-LJ
+LJ.FO$Response=c(91.4,136.7,82.4,73.4,94.2,143.9,87.4, 71.8)
+LJ.whole=rbind(LJ, LJ.FO)
+summary(lm(Response ~ A * B * C * D * E * F * G, LJ.whole))
+qqnorm(aov(Response ~  A * B * C * D * E * F * G, LJ.whole), label = TRUE)
+###Outliers are main effects B, D, and interaction effect B:D
+#refine model
+summary(aov(Response ~ B*D, LJ.whole))
+###Alpha is greater than all p-val's, thus we reject our null hypothesis. 
+
+##In this example our Fold-over design has a resolution 4, as compared to our 
+##original which is a resolution 3. Attaining a higher resolution is better 
+##because it allows for less restrictive assumptions.   
+
+##The only uncertainty that I do have with this is that our significance is a 
+##different result for our resolution 3 design than our resolution 4 design.Our 
+##resolution 3 design includes factors A, B, and D. As for our fold-over 
+##design(resolution 4) we have factors B, D, and interaction between B:D.   
+
+
+#################################################5)
+coded=function(x) #a function to code variable x
+{
+  ifelse(x==1, "+", "-")
+}
+LJ.whole = within(LJ.whole,{cA=coded(A);cB=coded(B);cC=coded(C);cD=coded(D);
+    cE=coded(E);cF=coded(F);cG=coded(G)})
+with(LJ.whole, interaction.plot(cB, cD, Response))
+##We want the highest response, therefore B+:D+ are what I would recommend for 
+##a maximum response. 
+
+```
+
